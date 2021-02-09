@@ -23,8 +23,10 @@ def split(imageArr, x, y, width, height, var_threshold):
         return None
     if variance <= var_threshold:
         imageArr[x:x+width, y:y+height] = mean
-        print("Replacing Pixels in Quad!")
-        print(imageArr[x:x+width, y:y+height])
+        print("--- Replacing Pixels in Quad ---")
+        print("X: " + str(x) + " Y: " + str(y) + " Width: " + str(x+width) + " Height: " + str(y+height))
+        print("With Value: " + str(mean) + '\n')
+        # print(imageArr[x:x+width, y:y+height])
     else:
         split(imageArr, x, y, width//2, height//2, var_threshold)  # Top Left
         # width = 512
@@ -61,6 +63,6 @@ print('Shape: ' + str(image.shape) + '\n')
 split(image, 0, 0, 512, 512, variance_threshold)
 
 # Image Processing/Output
-print('Printing Image! \n')
 filename = "result_baboon_%d.pgm" % (variance_threshold)
+print('Printing Image: ' + str(filename))
 cv2.imwrite(filename, image)
