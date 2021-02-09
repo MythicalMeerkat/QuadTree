@@ -3,13 +3,9 @@
 import cv2
 import numpy
 
-import warnings
-warnings.filterwarnings("ignore")
-
 
 def split(imageArr, x, y, width, height, var_threshold):
     # Number of Pixels in the quadrant
-    # pixels = (height - x) * (width - y)
     pixels = imageArr[x:x+width, y:y+height].size
 
     # Calculate the Mean value of the Pixels in the Quadrant
@@ -29,17 +25,9 @@ def split(imageArr, x, y, width, height, var_threshold):
         # print(imageArr[x:x+width, y:y+height])
     else:
         split(imageArr, x, y, width//2, height//2, var_threshold)  # Top Left
-        # width = 512
-        # height = 512
         split(imageArr, x + width//2, y, width // 2, height // 2, var_threshold)  # Top Right
-        # width = 512
-        # height = 512
         split(imageArr, x, y + width//2, width // 2, height // 2, var_threshold)  # Bottom Left
-        # width = 512
-        # height = 512
         split(imageArr, x + width//2, y + height//2, width // 2, height // 2, var_threshold)  # Bottom Right
-        # width = 512
-        # height = 512
 
 
 # Client Input
