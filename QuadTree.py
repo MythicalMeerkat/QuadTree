@@ -3,37 +3,41 @@
 import cv2
 import numpy
 
+import warnings
+warnings.filterwarnings("ignore")
+
 
 def split(imageArr, x, y, width, height, var_threshold):
     # Number of Pixels in the quadrant
     # pixels = (height - x) * (width - y)
-    pixels = imageArr.size
-
-    # Split imageArr into Quadrant
-    # print(imageArr)
+    pixels = imageArr[x:x+width, y:y+height].size
 
     # Calculate the Mean value of the Pixels in the Quadrant
-    mean = (numpy.mean(imageArr, axis=(0, 1)))
+    mean = (numpy.mean(imageArr[x:x+width, y:y+height]))
 
     # Calculate the Variance of the Quadrant
-    variance = numpy.var(imageArr)
+    variance = numpy.var(imageArr[x:x+width, y:y+height])
 
     if pixels <= 1:
         # Image Processing/Output
         return None
     if variance <= var_threshold:
-        imageArr[0:width, 0:height] = mean
-        print('Filling Pixels in Quadrant! \n')
-        print('Amount of Pixels in Quadrant: ' + str(pixels) + '\n')
-        print('Variance of the Quadrant: ' + str(variance) + '\n')
-        print('Mean of Pixel Values: ' + str(mean) + '\n')
-        print(imageArr)
+        imageArr[x:x+width, y:y+height] = mean
+        print("Replacing Pixels in Quad!")
+        print(imageArr[x:x+width, y:y+height])
     else:
-        split(imageArr[x:x+width//2, y:y+height//2], x, y, width//2, height//2, var_threshold)  # Top Left
-        split(imageArr[x+width//2:x+width, y:y+height//2], x + width//2, y, width // 2, height // 2, var_threshold)  # Top Right
-        split(imageArr[x:x+width//2, y+height//2:y+height], x, y + width//2, width // 2, height // 2, var_threshold)  # Bottom Left
-        split(imageArr[x+width//2:x+width, y+height//2:y+height], x + width//2, y + height//2, width // 2, height // 2, var_threshold)  # Bottom Right
-        print(imageArr)
+        split(imageArr, x, y, width//2, height//2, var_threshold)  # Top Left
+        # width = 512
+        # height = 512
+        split(imageArr, x + width//2, y, width // 2, height // 2, var_threshold)  # Top Right
+        # width = 512
+        # height = 512
+        split(imageArr, x, y + width//2, width // 2, height // 2, var_threshold)  # Bottom Left
+        # width = 512
+        # height = 512
+        split(imageArr, x + width//2, y + height//2, width // 2, height // 2, var_threshold)  # Bottom Right
+        # width = 512
+        # height = 512
 
 
 # Client Input
@@ -53,22 +57,10 @@ print('Type: ' + str(type(image)) + '\n')
 # Summarize shape
 print('Shape: ' + str(image.shape) + '\n')
 
-# Printing Raw Data of Image
-# print('Image Data: \n')
-# print(image)
-
 # Start Quad Tree Process
-split(image, 0, 0, 256, 256, variance_threshold)
+split(image, 0, 0, 512, 512, variance_threshold)
 
 # Image Processing/Output
 print('Printing Image! \n')
-cv2.imwrite('result_baboon.pgm', image)
-
-
-
-
-
-
-
-
-
+filename = "result_baboon_%d.pgm" % (variance_threshold)
+cv2.imwrite(filename, image)
